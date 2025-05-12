@@ -15,11 +15,6 @@ public class Curso {
     @Column(name = "id_curso", nullable = false)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_docente_curso", referencedColumnName = "id_docente_curso", nullable = false)
-    @NotNull
-    private DocenteCurso docenteCurso;
-
     @NotBlank
     @Column(name = "curso", nullable = false)
     private String curso;
