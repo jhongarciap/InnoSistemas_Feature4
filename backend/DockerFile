@@ -5,7 +5,7 @@ FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
 
 # Copia el JAR compilado a este directorio dentro del contenedor
-COPY /backend/target/Feature_4-0.0.1-SNAPSHOT.jar
+COPY backend/target/Feature_4-0.0.1-SNAPSHOT.jar
 
 # Expone el puerto 8080 para que Render pueda conectar con tu app
 EXPOSE 8080
