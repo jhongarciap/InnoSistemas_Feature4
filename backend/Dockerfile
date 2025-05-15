@@ -1,14 +1,29 @@
-# Imagen base con JDK 21
-FROM eclipse-temurin:21-jdk-jammy
+# Imagen base con JDK 21 y Maven
+FROM maven:3.9.4-eclipse-temurin-21 AS build
 
-# Directorio dentro del contenedor
+# Crea un directorio de trabajo
 WORKDIR /app
 
-# Copia el JAR compilado al contenedor
-COPY target/Feature_4-0.0.1-SNAPSHOT.jar app.jar
+# Copia pom.xml y descarga dependencias
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Expone el puerto (Render usa variable PORT)
+# Copia el resto del código fuente
+COPY . .
+
+# Construye el jar
+RUN mvn clean package -DskipTests
+
+# Imagen final minimalista con solo JDK
+FROM eclipse-temurin:21-jdk-jammy
+
+WORKDIR /app
+
+# Copia el jar desde la imagen anterior
+COPY --from=build /app/target/Feature_4-0.0.1-SNAPSHOT.jar app.jar
+
+# Expone el puerto
 EXPOSE 8080
 
-# Ejecuta el JAR, tomando el puerto desde la variable de entorno PORT
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
+# Comando para ejecutar la app
+CMD ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
