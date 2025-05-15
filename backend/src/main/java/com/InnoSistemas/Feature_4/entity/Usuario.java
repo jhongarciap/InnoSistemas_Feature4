@@ -4,16 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.List;
 
 @Entity
 @Table(name="tblusuarios")
 @Data
-public class Usuario implements UserDetails {
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,41 +53,4 @@ public class Usuario implements UserDetails {
     @NotBlank
     @Column(name = "contraseña", nullable = false)
     private String contrasena;
-
-    // Métodos de UserDetails
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> "ROLE_" + rol.getRol());// Usa el nombre del rol
-    }
-
-    @Override
-    public String getPassword() {
-        return contrasena;
-    }
-
-    @Override
-    public String getUsername() {
-        return correo; // Puedes usar correo o documento como username
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
