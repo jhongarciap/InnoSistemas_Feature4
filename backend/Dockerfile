@@ -1,0 +1,14 @@
+# Imagen base con JDK 21
+FROM eclipse-temurin:21-jdk-jammy
+
+# Directorio dentro del contenedor donde estará la app
+WORKDIR /app
+
+# Copia el JAR compilado a este directorio dentro del contenedor
+COPY target/Feature_4-0.0.1-SNAPSHOT.jar app.jar
+
+# Expone el puerto 8080 para que Render pueda conectar con tu app
+EXPOSE 8080
+
+# Ejecuta el JAR usando java, y usa la variable de entorno PORT que Render configura
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
