@@ -1,10 +1,13 @@
 package com.InnoSistemas.Feature_4.service;
 
 import com.InnoSistemas.Feature_4.dto.EventoRequestDTO;
+import com.InnoSistemas.Feature_4.dto.NotificationDTO; // Keep this one
 import com.InnoSistemas.Feature_4.entity.*;
 import com.InnoSistemas.Feature_4.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class EventoService {
@@ -17,7 +20,8 @@ public class EventoService {
     @Autowired private TipoEventoRepository tipoEventoRepository;
     @Autowired private EmailService emailService;
     @Autowired private UsuarioRepository usuarioRepository;
-    @Autowired private EventoUsuarioRepository eventoUsuarioRepository; // 💥 agregado
+    @Autowired private EventoUsuarioRepository eventoUsuarioRepository;
+    @Autowired private NotificationService notificationService; // <-- Add this line
 
     public Evento registrarEvento(EventoRequestDTO dto) {
         Evento evento = new Evento();
@@ -52,6 +56,15 @@ public class EventoService {
                                 "\nFecha: " + evento.getFecha() + " " + evento.getHora() +
                                 "\n\n¡No lo olvides!"
                 );
+
+                // 🆕 Enviar notificación SSE
+                NotificationDTO notificacion = new NotificationDTO();
+                notificacion.setMensaje("Nuevo evento: " + evento.getNombre());
+                notificacion.setFecha(LocalDateTime.now());
+                notificacion.setTipo("evento");
+                notificacion.setUsuarioId(usuario.getId());
+
+                notificationService.sendNotification(usuario.getId(), notificacion);
             });
         });
 
