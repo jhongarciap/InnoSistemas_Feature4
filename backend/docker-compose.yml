@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  feature4:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://ep-wild-morning-ac1o3zqt-pooler.sa-east-1.aws.neon.tech:5432/InnoSistemas_Feature4?sslmode=require
+      SPRING_DATASOURCE_USERNAME: InnoSistemas_Feature4_owner
+      SPRING_DATASOURCE_PASSWORD: npg_LQCZPNFy3m9B
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: innosistemasfeature4@gmail.com
+      SPRING_MAIL_PASSWORD: djpd ryti oern qkqq
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
+      SERVER_PORT: 8080
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
